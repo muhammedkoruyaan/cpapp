@@ -1,0 +1,83 @@
+{
+    "name": "cpapp",
+    "version": "1.0.0",
+    "description": "A simple CAP project.",
+    "repository": "<Add your repository here>",
+    "license": "UNLICENSED",
+    "private": true,
+    "dependencies": {
+        "@sap/cds": "^6.7.0",
+        "@sap/xssec": "^3.2.8",
+        "debug": "^4.3.4",
+        "express": "^4",
+        "hdb": "^0.18.3",
+        "passport": "^0.5.0"
+    },
+    "devDependencies": {
+        "@sap/ux-specification": "^1.108.2",
+        "sqlite3": "^5.0.2",
+        "rimraf": "^3.0.2"
+    },
+    "engines": {
+        "node": "^16"
+    },
+    "scripts": {
+        "start": "cds run",
+        "watch-risks": "cds watch --open risks/webapp/index.html#fe-lrop-v4",
+        "watch-mitigations": "cds watch --open mitigations/webapp/index.html#fe-lrop-v4",
+        "watch-cap-risks-v1": "cds watch --open cap-risks-v1/webapp/index.html?sap-ui-xx-viewCache=false",
+        "watch-cap-mitigations-v1": "cds watch --open cap-mitigations-v1/webapp/index.html?sap-ui-xx-viewCache=false",
+        "undeploy": "cf undeploy cpapp --delete-services --delete-service-keys --delete-service-brokers",
+        "build": "rimraf resources mta_archives && mbt build --mtar archive",
+        "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+    },
+    "eslintConfig": {
+        "extends": "eslint:recommended",
+        "env": {
+            "es2020": true,
+            "node": true,
+            "jest": true,
+            "mocha": true
+        },
+        "globals": {
+            "SELECT": true,
+            "INSERT": true,
+            "UPDATE": true,
+            "DELETE": true,
+            "CREATE": true,
+            "DROP": true,
+            "CDL": true,
+            "CQL": true,
+            "CXL": true,
+            "cds": true
+        },
+        "rules": {
+            "no-console": "off",
+            "require-atomic-updates": "off"
+        }
+    },
+    "sapux": [
+        "app/risks",
+        "app/mitigations",
+        "app/cap-risks-v1",
+        "app/cap-mitigations-v1"
+    ],
+    "cds": {
+        "requires": {
+            "db": {
+                "kind": "sql"
+            },
+            "[production]": {
+                "auth": {
+                    "kind": "xsuaa"
+                },
+                "db": {
+                    "kind": "hana-cloud"
+                }
+            }
+        },
+        "hana": {
+            "deploy-format": "hdbtable"
+        }
+    }
+}
